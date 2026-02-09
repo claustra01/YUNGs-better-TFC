@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:coal"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tfc:powder/graphite"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tfc:kaolin_clay"
+        }
+      ]
+    }
+  ]
+}
+

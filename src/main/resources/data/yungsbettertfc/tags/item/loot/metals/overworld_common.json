@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "tfc:metal/ingot/copper",
+    "tfc:metal/ingot/bronze",
+    "tfc:metal/ingot/bismuth_bronze",
+    "tfc:metal/ingot/wrought_iron",
+    "tfc:metal/ingot/bismuth",
+    "tfc:metal/ingot/tin",
+    "tfc:metal/ingot/zinc",
+    "tfc:metal/ingot/brass"
+  ]
+}

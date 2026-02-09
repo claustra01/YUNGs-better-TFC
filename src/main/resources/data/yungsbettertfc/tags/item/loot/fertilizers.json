@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "tfc:compost",
+    "tfc:rotten_compost",
+    "tfc:powder/wood_ash",
+    "tfc:powder/saltpeter",
+    "tfc:powder/sylvite",
+    "tfc:groundcover/guano"
+  ]
+}
+

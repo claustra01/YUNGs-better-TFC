@@ -1,0 +1,43 @@
+{
+  "replace": false,
+  "values": [
+    "tfc:seeds/alfalfa",
+    "tfc:seeds/barley",
+    "tfc:seeds/beet",
+    "tfc:seeds/cabbage",
+    "tfc:seeds/canola",
+    "tfc:seeds/carrot",
+    "tfc:seeds/cassava",
+    "tfc:seeds/garlic",
+    "tfc:seeds/green_bean",
+    "tfc:seeds/jute",
+    "tfc:seeds/lentil",
+    "tfc:seeds/maize",
+    "tfc:seeds/melon",
+    "tfc:seeds/oat",
+    "tfc:seeds/onion",
+    "tfc:seeds/papyrus",
+    "tfc:seeds/peanut",
+    "tfc:seeds/potato",
+    "tfc:seeds/pumpkin",
+    "tfc:seeds/radish",
+    "tfc:seeds/red_bell_pepper",
+    "tfc:seeds/rice",
+    "tfc:seeds/rye",
+    "tfc:seeds/squash",
+    "tfc:seeds/soybean",
+    "tfc:seeds/sugarcane",
+    "tfc:seeds/tomato",
+    "tfc:seeds/wheat",
+    "tfc:seeds/yellow_bell_pepper",
+    {
+      "id": "firmalife:seeds/red_grape",
+      "required": false
+    },
+    {
+      "id": "firmalife:seeds/white_grape",
+      "required": false
+    }
+  ]
+}
+
