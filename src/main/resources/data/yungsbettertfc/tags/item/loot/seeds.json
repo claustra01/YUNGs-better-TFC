@@ -29,15 +29,7 @@
     "tfc:seeds/sugarcane",
     "tfc:seeds/tomato",
     "tfc:seeds/wheat",
-    "tfc:seeds/yellow_bell_pepper",
-    {
-      "id": "firmalife:seeds/red_grape",
-      "required": false
-    },
-    {
-      "id": "firmalife:seeds/white_grape",
-      "required": false
-    }
+    "tfc:seeds/yellow_bell_pepper"
   ]
 }
 

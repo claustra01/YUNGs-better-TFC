@@ -39,23 +39,7 @@
     "tfc:food/wheat",
     "tfc:food/barley",
     "tfc:food/red_bell_pepper",
-    "tfc:food/yellow_bell_pepper",
-    {
-      "id": "firmalife:food/red_grapes",
-      "required": false
-    },
-    {
-      "id": "firmalife:food/white_grapes",
-      "required": false
-    },
-    {
-      "id": "firmalife:food/pineapple",
-      "required": false
-    },
-    {
-      "id": "firmalife:food/fig",
-      "required": false
-    }
+    "tfc:food/yellow_bell_pepper"
   ]
 }
 
