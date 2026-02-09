@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:tag",
+              "name": "yungsbettertfc:loot/metals/nether_fortress_rare",
+              "expand": true,
+              "conditions": [
+                {
+                  "condition": "minecraft:random_chance",
+                  "chance": 0.2
+                }
+              ]
+            },
+            {
+              "type": "minecraft:tag",
+              "name": "yungsbettertfc:loot/metals/nether_fortress_common",
+              "expand": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

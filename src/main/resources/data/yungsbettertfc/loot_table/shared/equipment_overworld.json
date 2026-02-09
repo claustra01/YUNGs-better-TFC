@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:tag",
+              "name": "yungsbettertfc:loot/equipment/overworld_rare",
+              "expand": true,
+              "conditions": [
+                {
+                  "condition": "minecraft:random_chance",
+                  "chance": 0.2
+                }
+              ]
+            },
+            {
+              "type": "minecraft:tag",
+              "name": "yungsbettertfc:loot/equipment/overworld_common",
+              "expand": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
