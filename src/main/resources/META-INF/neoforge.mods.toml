@@ -93,14 +93,14 @@ Makes YUNG's Better structures generate in TerraFirmaCraft overworld biomes.
     modId="tfc" # TerraFirmaCraft
     type="required"
     versionRange="[0,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="yungsapi" # YUNG's API
     type="required"
     versionRange="[0,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 # Optional dependencies
@@ -108,42 +108,42 @@ Makes YUNG's Better structures generate in TerraFirmaCraft overworld biomes.
     modId="beneath" # Beneath
     type="optional"
     versionRange="[0,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="betterdungeons" # YUNG's Better Dungeons
     type="optional"
     versionRange="[0,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="betternetherfortresses" # YUNG's Better Nether Fortresses
     type="optional"
     versionRange="[0,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="betterendisland" # YUNG's Better End Island
     type="optional"
     versionRange="[0,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="betteroceanmonuments" # YUNG's Better Ocean Monuments
     type="optional"
     versionRange="[0,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="betterstrongholds" # YUNG's Better Strongholds
     type="optional"
     versionRange="[0,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares

@@ -55,7 +55,7 @@
       ],
       "cwd": "${workspaceFolder}\\runs\\client",
       "env": {
-        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     },
@@ -115,7 +115,7 @@
       ],
       "cwd": "${workspaceFolder}\\runs\\data",
       "env": {
-        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     },
@@ -167,7 +167,7 @@
       ],
       "cwd": "${workspaceFolder}\\runs\\gameTestServer",
       "env": {
-        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     },
@@ -223,7 +223,7 @@
       ],
       "cwd": "${workspaceFolder}\\runs\\junit",
       "env": {
-        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     },
@@ -274,7 +274,7 @@
       ],
       "cwd": "${workspaceFolder}\\runs\\server",
       "env": {
-        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     }
