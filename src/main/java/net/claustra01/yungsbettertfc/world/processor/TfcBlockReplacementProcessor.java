@@ -10,6 +10,9 @@ import net.claustra01.yungsbettertfc.ModStructureProcessors;
 import net.claustra01.yungsbettertfc.access.StructureTemplateIdAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -21,13 +24,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureEntityInfo;
 import org.slf4j.Logger;
 
 /**
@@ -199,7 +202,6 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         }
 
         BlockState out = copyPropertiesByName(in, outBlock.defaultBlockState());
-        out = applyTfcFluidLogging(level, processedBlockInfo.pos(), in, out);
         if (LOGGED_FIRST_REPLACEMENT.compareAndSet(false, true)) {
             @Nullable ResourceLocation templateId = null;
             if (template instanceof StructureTemplateIdAccess access) {
@@ -216,6 +218,72 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
                     woodHint);
         }
         return new StructureTemplate.StructureBlockInfo(processedBlockInfo.pos(), out, processedBlockInfo.nbt());
+    }
+
+    @Override
+    public StructureEntityInfo processEntity(
+            LevelReader level,
+            BlockPos pos,
+            StructureEntityInfo rawEntityInfo,
+            StructureEntityInfo processedEntityInfo,
+            StructurePlaceSettings settings,
+            StructureTemplate template) {
+        CompoundTag nbt = processedEntityInfo.nbt;
+        String id = nbt.getString("id");
+        if (id.isEmpty()) {
+            return processedEntityInfo;
+        }
+        ResourceLocation entityId = ResourceLocation.tryParse(id);
+        if (entityId == null || !NS_MINECRAFT.equals(entityId.getNamespace())) {
+            return processedEntityInfo;
+        }
+
+        String metal = equipmentMetalForTemplate(template);
+        boolean changed = false;
+        CompoundTag out = nbt.copy();
+        switch (entityId.getPath()) {
+            case "item_frame":
+            case "glow_item_frame":
+                changed |= replaceItemStackInTag(out, "Item", metal);
+                break;
+            case "armor_stand":
+                changed |= replaceItemStacksInList(out, "ArmorItems", metal);
+                changed |= replaceItemStacksInList(out, "HandItems", metal);
+                break;
+            default:
+                break;
+        }
+
+        if (!changed) {
+            return processedEntityInfo;
+        }
+        return new StructureEntityInfo(processedEntityInfo.pos, processedEntityInfo.blockPos, out);
+    }
+
+    private static String equipmentMetalForTemplate(StructureTemplate template) {
+        @Nullable ResourceLocation templateId = null;
+        if (template instanceof StructureTemplateIdAccess access) {
+            templateId = access.yungsbettertfc$getTemplateId();
+        }
+
+        // Better Strongholds: treat as endgame structure and upgrade displayed gear.
+        if (templateId != null && "betterstrongholds".equals(templateId.getNamespace())) {
+            return "black_steel";
+        }
+
+        return "wrought_iron";
+    }
+
+    @Override
+    public java.util.List<StructureTemplate.StructureBlockInfo> finalizeProcessing(
+            net.minecraft.world.level.ServerLevelAccessor level,
+            BlockPos structurePos,
+            BlockPos structureOrigin,
+            java.util.List<StructureTemplate.StructureBlockInfo> originalBlocks,
+            java.util.List<StructureTemplate.StructureBlockInfo> processedBlocks,
+            StructurePlaceSettings settings) {
+        // Fix up blocks that require knowledge of nearby blocks in the same template (ex: TFC bookshelves have facing).
+        return orientBookshelves(processedBlocks);
     }
 
     private static @Nullable net.minecraft.server.level.ServerLevel resolveServerLevel(LevelReader level) {
@@ -355,11 +423,9 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             case "lectern":
                 return tfcWood("wood/lectern/", woodHint);
             case "crafting_table":
-            case "smithing_table":
-            case "fletching_table":
-            case "cartography_table":
-            case "loom":
                 return tfcWood("wood/workbench/", woodHint);
+            case "smithing_table":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "quern");
             case "bookshelf":
                 return tfcWood("wood/bookshelf/", woodHint);
             default:
@@ -531,11 +597,9 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             case "lectern":
                 return tfcWood("wood/lectern/", woodHint);
             case "crafting_table":
-            case "smithing_table":
-            case "fletching_table":
-            case "cartography_table":
-            case "loom":
                 return tfcWood("wood/workbench/", woodHint);
+            case "smithing_table":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "quern");
             case "bookshelf":
                 return tfcWood("wood/bookshelf/", woodHint);
             default:
@@ -645,6 +709,7 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             case "iron_trapdoor":
                 return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/trapdoor/wrought_iron");
             case "gold_block":
+            case "raw_gold_block":
                 return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/block/gold");
             case "copper_block":
             case "cut_copper":
@@ -687,12 +752,9 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
     }
 
     private static @Nullable ResourceLocation mapPlantsAndDecor(String vanillaPath) {
-        // Kelp (TFC has multiple types; leafy kelp is the closest analogue to vanilla).
-        if ("kelp".equals(vanillaPath)) {
-            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "plant/leafy_kelp");
-        }
-        if ("kelp_plant".equals(vanillaPath)) {
-            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "plant/leafy_kelp_plant");
+        // Kelp in ocean monuments can be fragile with TFC water mechanics. Replace it with plain water.
+        if ("kelp".equals(vanillaPath) || "kelp_plant".equals(vanillaPath)) {
+            return ResourceLocation.fromNamespaceAndPath(NS_MINECRAFT, "water");
         }
 
         // Seagrass.
@@ -702,10 +764,6 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
 
         if ("sea_pickle".equals(vanillaPath)) {
             return ResourceLocation.fromNamespaceAndPath(NS_TFC, "sea_pickle");
-        }
-
-        if ("bell".equals(vanillaPath)) {
-            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "brass_bell");
         }
 
         // Flower pots.
@@ -781,69 +839,158 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         return BuiltInRegistries.BLOCK.containsKey(id) ? id : null;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private static BlockState applyTfcFluidLogging(LevelReader level, BlockPos pos, BlockState original, BlockState out) {
-        Property<?> prop = out.getBlock().getStateDefinition().getProperty("fluid");
-        if (prop == null) {
-            return out;
+    private static boolean replaceItemStackInTag(CompoundTag entityNbt, String key, String metal) {
+        if (!entityNbt.contains(key, Tag.TAG_COMPOUND)) {
+            return false;
         }
-
-        FluidState fluidState = original.getFluidState();
-        if (fluidState.isEmpty()) {
-            fluidState = level.getFluidState(pos);
-        }
-        if (fluidState.isEmpty()) {
-            return out;
-        }
-
-        Fluid fluid = fluidState.getType();
-        @Nullable Comparable<?> value = findFluidPropertyValue(prop, fluid);
-        if (value == null) {
-            return out;
-        }
-
-        try {
-            return out.setValue((Property) prop, (Comparable) value);
-        } catch (Exception ignored) {
-            return out;
-        }
+        CompoundTag stack = entityNbt.getCompound(key);
+        return replaceItemStackId(stack, metal);
     }
 
-    @SuppressWarnings({"rawtypes"})
-    private static @Nullable Comparable<?> findFluidPropertyValue(Property<?> prop, Fluid fluid) {
-        // TFC uses a FluidProperty with values of type FluidProperty$FluidKey, which exposes getFluid(). We use
-        // reflection here to avoid a hard compile-time dependency on TFC internals.
-        for (Object raw : prop.getPossibleValues()) {
-            if (!(raw instanceof Comparable<?> value)) {
+    private static boolean replaceItemStacksInList(CompoundTag entityNbt, String key, String metal) {
+        if (!entityNbt.contains(key, Tag.TAG_LIST)) {
+            return false;
+        }
+        ListTag list = entityNbt.getList(key, Tag.TAG_COMPOUND);
+        boolean changed = false;
+        for (int i = 0; i < list.size(); i++) {
+            CompoundTag stack = list.getCompound(i);
+            changed |= replaceItemStackId(stack, metal);
+        }
+        return changed;
+    }
+
+    private static boolean replaceItemStackId(CompoundTag stackTag, String metal) {
+        if (!stackTag.contains("id", Tag.TAG_STRING)) {
+            return false;
+        }
+        String idStr = stackTag.getString("id");
+        if (idStr.isEmpty()) {
+            return false;
+        }
+        ResourceLocation id = ResourceLocation.tryParse(idStr);
+        if (id == null || !NS_MINECRAFT.equals(id.getNamespace())) {
+            return false;
+        }
+
+        @Nullable ResourceLocation replacement = mapVanillaEquipmentItem(id, metal);
+        if (replacement == null || !BuiltInRegistries.ITEM.containsKey(replacement)) {
+            return false;
+        }
+
+        stackTag.putString("id", replacement.toString());
+        // Item-specific components from vanilla equipment can be invalid on TFC items (ex: trims, charged projectiles).
+        stackTag.remove("components");
+        stackTag.remove("tag");
+        stackTag.remove("Damage");
+        stackTag.remove("damage");
+        return true;
+    }
+
+    private static @Nullable ResourceLocation mapVanillaEquipmentItem(ResourceLocation itemId, String metal) {
+        String p = itemId.getPath();
+
+        // Tools/weapons
+        if (p.endsWith("_sword")) return tfcItem("metal/sword/" + metal);
+        if (p.endsWith("_axe")) return tfcItem("metal/axe/" + metal);
+        if (p.endsWith("_pickaxe")) return tfcItem("metal/pickaxe/" + metal);
+        if (p.endsWith("_shovel")) return tfcItem("metal/shovel/" + metal);
+        if (p.endsWith("_hoe")) return tfcItem("metal/hoe/" + metal);
+
+        // Armor (vanilla leggings -> TFC greaves)
+        if (p.endsWith("_helmet")) return tfcItem("metal/helmet/" + metal);
+        if (p.endsWith("_chestplate")) return tfcItem("metal/chestplate/" + metal);
+        if (p.endsWith("_leggings")) return tfcItem("metal/greaves/" + metal);
+        if (p.endsWith("_boots")) return tfcItem("metal/boots/" + metal);
+
+        // Misc equipment
+        return switch (p) {
+            case "shield" -> tfcItem("metal/shield/" + metal);
+            case "bow", "crossbow", "trident" -> tfcItem("metal/javelin/" + metal);
+            case "mace" -> tfcItem("metal/mace/" + metal);
+            default -> null;
+        };
+    }
+
+    private static @Nullable ResourceLocation tfcItem(String path) {
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NS_TFC, path);
+        return BuiltInRegistries.ITEM.containsKey(id) ? id : null;
+    }
+
+    private static java.util.List<StructureTemplate.StructureBlockInfo> orientBookshelves(
+            java.util.List<StructureTemplate.StructureBlockInfo> blocks) {
+        // Always copy: some structure placement paths pass unmodifiable lists here.
+        java.util.ArrayList<StructureTemplate.StructureBlockInfo> outBlocks = new java.util.ArrayList<>(blocks);
+
+        java.util.HashMap<BlockPos, BlockState> byPos = new java.util.HashMap<>(outBlocks.size() * 2);
+        for (StructureTemplate.StructureBlockInfo info : outBlocks) {
+            byPos.put(info.pos(), info.state());
+        }
+
+        for (int i = 0; i < outBlocks.size(); i++) {
+            StructureTemplate.StructureBlockInfo info = outBlocks.get(i);
+            BlockState state = info.state();
+            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+            if (!NS_TFC.equals(id.getNamespace())) continue;
+            if (!id.getPath().startsWith("wood/bookshelf/")) continue;
+
+            DirectionProperty facingProp = null;
+            Property<?> prop = state.getBlock().getStateDefinition().getProperty("facing");
+            if (prop instanceof DirectionProperty dp) {
+                facingProp = dp;
+            }
+            if (facingProp == null) continue;
+
+            net.minecraft.core.Direction desired = guessFrontFacingForShelf(info.pos(), byPos);
+            if (desired == null) continue;
+
+            try {
+                BlockState newState = state.setValue(facingProp, desired);
+                outBlocks.set(
+                        i, new StructureTemplate.StructureBlockInfo(info.pos(), newState, info.nbt()));
+            } catch (Exception ignored) {
+                // Defensive: if facing can't be applied, leave as-is.
+            }
+        }
+
+        return outBlocks;
+    }
+
+    private static @Nullable net.minecraft.core.Direction guessFrontFacingForShelf(
+            BlockPos pos, java.util.Map<BlockPos, BlockState> byPos) {
+        // Prefer: face away from a single "solid backing" block (stone bricks, etc).
+        @Nullable net.minecraft.core.Direction backing = null;
+        for (net.minecraft.core.Direction dir : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+            BlockState neighbor = byPos.get(pos.relative(dir));
+            if (neighbor == null || neighbor.isAir()) continue;
+
+            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(neighbor.getBlock());
+            if (NS_TFC.equals(id.getNamespace()) && id.getPath().startsWith("wood/bookshelf/")) {
                 continue;
             }
 
-            @Nullable Fluid candidate = tryGetFluid(value);
-            if (candidate != null && candidate == fluid) {
-                return value;
+            if (backing != null) {
+                backing = null; // ambiguous
+                break;
             }
+            backing = dir;
         }
-        // Fallback: match by name when getFluid() isn't accessible for some reason.
-        String target = BuiltInRegistries.FLUID.getKey(fluid).toString();
-        for (Object raw : prop.getPossibleValues()) {
-            if (!(raw instanceof Comparable<?> value)) {
-                continue;
-            }
-            if (value.toString().toLowerCase().contains(target.toLowerCase())) {
-                return value;
-            }
+        if (backing != null) {
+            return backing.getOpposite();
         }
-        return null;
-    }
 
-    private static @Nullable Fluid tryGetFluid(Comparable<?> value) {
-        try {
-            var method = value.getClass().getMethod("getFluid");
-            Object out = method.invoke(value);
-            return out instanceof Fluid f ? f : null;
-        } catch (Throwable ignored) {
-            return null;
+        // Fallback: face towards the only side that is "air" within the template.
+        @Nullable net.minecraft.core.Direction air = null;
+        for (net.minecraft.core.Direction dir : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+            BlockState neighbor = byPos.get(pos.relative(dir));
+            boolean isAir = neighbor == null || neighbor.isAir();
+            if (!isAir) continue;
+            if (air != null) {
+                return null; // ambiguous
+            }
+            air = dir;
         }
+        return air;
     }
 
     private static @Nullable String detectVanillaWoodType(String path) {
