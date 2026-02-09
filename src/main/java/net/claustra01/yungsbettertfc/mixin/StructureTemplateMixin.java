@@ -24,7 +24,6 @@ public abstract class StructureTemplateMixin implements StructureTemplateIdAcces
                     "betterdungeons",
                     "betteroceanmonuments",
                     "betterfortresses",
-                    "betterendisland",
                     "beneath");
 
     @Unique private ResourceLocation yungsbettertfc$templateId;

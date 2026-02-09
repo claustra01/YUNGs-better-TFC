@@ -112,13 +112,6 @@ config="${mod_id}.mixins.json"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="firmalife" # Firmalife
-    type="optional"
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
     modId="betterdungeons" # YUNG's Better Dungeons
     type="optional"
     versionRange="[0,)"
@@ -127,13 +120,6 @@ config="${mod_id}.mixins.json"
 
 [[dependencies.${mod_id}]]
     modId="betterfortresses" # YUNG's Better Nether Fortresses
-    type="optional"
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="betterendisland" # YUNG's Better End Island
     type="optional"
     versionRange="[0,)"
     ordering="AFTER"
