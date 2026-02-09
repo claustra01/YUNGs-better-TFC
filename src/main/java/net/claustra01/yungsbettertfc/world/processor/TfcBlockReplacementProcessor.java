@@ -19,11 +19,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.slf4j.Logger;
 
 /**
@@ -41,6 +45,7 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
 
     private static final String NS_MINECRAFT = "minecraft";
     private static final String NS_TFC = "tfc";
+    private static final String NS_BENEATH = "beneath";
 
     private static final String DEFAULT_ROCK_OVERWORLD = "granite";
     private static final String DEFAULT_ROCK_NETHER = "basalt";
@@ -96,6 +101,11 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         if (serverLevel != null && serverLevel.dimension() != Level.OVERWORLD) {
             scope = ReplacementScope.UTILITY_ONLY;
         }
+        boolean beneathNether =
+                serverLevel != null
+                        && serverLevel.dimension() == Level.NETHER
+                        && BuiltInRegistries.BLOCK.containsKey(
+                                ResourceLocation.fromNamespaceAndPath(NS_BENEATH, "wood/planks/crimson"));
 
         BlockState in = processedBlockInfo.state();
         Block inBlock = in.getBlock();
@@ -115,6 +125,15 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         if (path.startsWith("infested_")) {
             infested = true;
             path = path.substring("infested_".length());
+        }
+
+        // Tall seagrass is a double-block plant. Replacing it with a single-block aquatic plant works best if the upper
+        // half becomes water (otherwise the "upper" plant block tends to pop off).
+        if ("tall_seagrass".equals(path)
+                && in.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)
+                && in.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
+            return new StructureTemplate.StructureBlockInfo(
+                    processedBlockInfo.pos(), Blocks.WATER.defaultBlockState(), processedBlockInfo.nbt());
         }
 
         // Cache context once per template placement origin (offset).
@@ -168,7 +187,8 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             }
         }
 
-        @Nullable ResourceLocation outId = mapVanillaToTfc(path, rock, soil, woodHint, infested, scope);
+        @Nullable ResourceLocation outId =
+                mapVanillaToTfc(path, rock, soil, woodHint, infested, scope, beneathNether);
         if (outId == null) {
             return processedBlockInfo;
         }
@@ -179,6 +199,7 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         }
 
         BlockState out = copyPropertiesByName(in, outBlock.defaultBlockState());
+        out = applyTfcFluidLogging(level, processedBlockInfo.pos(), in, out);
         if (LOGGED_FIRST_REPLACEMENT.compareAndSet(false, true)) {
             @Nullable ResourceLocation templateId = null;
             if (template instanceof StructureTemplateIdAccess access) {
@@ -221,9 +242,15 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
     }
 
     private static @Nullable ResourceLocation mapVanillaToTfc(
-            String vanillaPath, String rock, String soil, String woodHint, boolean infested, ReplacementScope scope) {
+            String vanillaPath,
+            String rock,
+            String soil,
+            String woodHint,
+            boolean infested,
+            ReplacementScope scope,
+            boolean beneathNether) {
         if (scope == ReplacementScope.UTILITY_ONLY) {
-            return mapUtilityOnly(vanillaPath, woodHint);
+            return mapUtilityOnly(vanillaPath, woodHint, beneathNether);
         }
 
         // Stone families (rock-dependent).
@@ -271,7 +298,14 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         return null;
     }
 
-    private static @Nullable ResourceLocation mapUtilityOnly(String vanillaPath, String woodHint) {
+    private static @Nullable ResourceLocation mapUtilityOnly(String vanillaPath, String woodHint, boolean beneathNether) {
+        if (beneathNether) {
+            @Nullable ResourceLocation beneath = mapBeneathNether(vanillaPath);
+            if (beneath != null) {
+                return beneath;
+            }
+        }
+
         // Wood utility blocks.
         @Nullable ResourceLocation wood = mapWoodUtilityOnly(vanillaPath, woodHint);
         if (wood != null) {
@@ -321,6 +355,10 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             case "lectern":
                 return tfcWood("wood/lectern/", woodHint);
             case "crafting_table":
+            case "smithing_table":
+            case "fletching_table":
+            case "cartography_table":
+            case "loom":
                 return tfcWood("wood/workbench/", woodHint);
             case "bookshelf":
                 return tfcWood("wood/bookshelf/", woodHint);
@@ -344,8 +382,6 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
 
     private static @Nullable ResourceLocation mapLights(String vanillaPath) {
         switch (vanillaPath) {
-            case "lantern":
-                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/lamp/wrought_iron");
             case "torch":
                 return ResourceLocation.fromNamespaceAndPath(NS_TFC, "torch");
             case "wall_torch":
@@ -495,6 +531,10 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             case "lectern":
                 return tfcWood("wood/lectern/", woodHint);
             case "crafting_table":
+            case "smithing_table":
+            case "fletching_table":
+            case "cartography_table":
+            case "loom":
                 return tfcWood("wood/workbench/", woodHint);
             case "bookshelf":
                 return tfcWood("wood/bookshelf/", woodHint);
@@ -655,8 +695,17 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             return ResourceLocation.fromNamespaceAndPath(NS_TFC, "plant/leafy_kelp_plant");
         }
 
+        // Seagrass.
+        if ("seagrass".equals(vanillaPath) || "tall_seagrass".equals(vanillaPath)) {
+            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "plant/eel_grass");
+        }
+
         if ("sea_pickle".equals(vanillaPath)) {
             return ResourceLocation.fromNamespaceAndPath(NS_TFC, "sea_pickle");
+        }
+
+        if ("bell".equals(vanillaPath)) {
+            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "brass_bell");
         }
 
         // Flower pots.
@@ -691,6 +740,110 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         }
 
         return null;
+    }
+
+    private static @Nullable ResourceLocation mapBeneathNether(String vanillaPath) {
+        // Only called when we are in the Nether and Beneath is installed.
+        return switch (vanillaPath) {
+            case "crimson_planks" -> beneath("wood/planks/crimson");
+            case "crimson_slab" -> beneath("wood/planks/crimson_slab");
+            case "crimson_stairs" -> beneath("wood/planks/crimson_stairs");
+            case "crimson_door" -> beneath("wood/door/crimson");
+            case "crimson_trapdoor" -> beneath("wood/trapdoor/crimson");
+            case "crimson_button" -> beneath("wood/button/crimson");
+            case "crimson_pressure_plate" -> beneath("wood/pressure_plate/crimson");
+            case "crimson_fence" -> beneath("wood/fence/crimson");
+            case "crimson_fence_gate" -> beneath("wood/fence_gate/crimson");
+            case "crimson_stem" -> beneath("wood/log/crimson");
+            case "crimson_hyphae" -> beneath("wood/wood/crimson");
+            case "stripped_crimson_stem" -> beneath("wood/stripped_log/crimson");
+            case "stripped_crimson_hyphae" -> beneath("wood/stripped_wood/crimson");
+            case "warped_planks" -> beneath("wood/planks/warped");
+            case "warped_slab" -> beneath("wood/planks/warped_slab");
+            case "warped_stairs" -> beneath("wood/planks/warped_stairs");
+            case "warped_door" -> beneath("wood/door/warped");
+            case "warped_trapdoor" -> beneath("wood/trapdoor/warped");
+            case "warped_button" -> beneath("wood/button/warped");
+            case "warped_pressure_plate" -> beneath("wood/pressure_plate/warped");
+            case "warped_fence" -> beneath("wood/fence/warped");
+            case "warped_fence_gate" -> beneath("wood/fence_gate/warped");
+            case "warped_stem" -> beneath("wood/log/warped");
+            case "warped_hyphae" -> beneath("wood/wood/warped");
+            case "stripped_warped_stem" -> beneath("wood/stripped_log/warped");
+            case "stripped_warped_hyphae" -> beneath("wood/stripped_wood/warped");
+            case "nether_gold_ore" -> beneath("ore/normal_nether_gold");
+            default -> null;
+        };
+    }
+
+    private static @Nullable ResourceLocation beneath(String path) {
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NS_BENEATH, path);
+        return BuiltInRegistries.BLOCK.containsKey(id) ? id : null;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static BlockState applyTfcFluidLogging(LevelReader level, BlockPos pos, BlockState original, BlockState out) {
+        Property<?> prop = out.getBlock().getStateDefinition().getProperty("fluid");
+        if (prop == null) {
+            return out;
+        }
+
+        FluidState fluidState = original.getFluidState();
+        if (fluidState.isEmpty()) {
+            fluidState = level.getFluidState(pos);
+        }
+        if (fluidState.isEmpty()) {
+            return out;
+        }
+
+        Fluid fluid = fluidState.getType();
+        @Nullable Comparable<?> value = findFluidPropertyValue(prop, fluid);
+        if (value == null) {
+            return out;
+        }
+
+        try {
+            return out.setValue((Property) prop, (Comparable) value);
+        } catch (Exception ignored) {
+            return out;
+        }
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    private static @Nullable Comparable<?> findFluidPropertyValue(Property<?> prop, Fluid fluid) {
+        // TFC uses a FluidProperty with values of type FluidProperty$FluidKey, which exposes getFluid(). We use
+        // reflection here to avoid a hard compile-time dependency on TFC internals.
+        for (Object raw : prop.getPossibleValues()) {
+            if (!(raw instanceof Comparable<?> value)) {
+                continue;
+            }
+
+            @Nullable Fluid candidate = tryGetFluid(value);
+            if (candidate != null && candidate == fluid) {
+                return value;
+            }
+        }
+        // Fallback: match by name when getFluid() isn't accessible for some reason.
+        String target = BuiltInRegistries.FLUID.getKey(fluid).toString();
+        for (Object raw : prop.getPossibleValues()) {
+            if (!(raw instanceof Comparable<?> value)) {
+                continue;
+            }
+            if (value.toString().toLowerCase().contains(target.toLowerCase())) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    private static @Nullable Fluid tryGetFluid(Comparable<?> value) {
+        try {
+            var method = value.getClass().getMethod("getFluid");
+            Object out = method.invoke(value);
+            return out instanceof Fluid f ? f : null;
+        } catch (Throwable ignored) {
+            return null;
+        }
     }
 
     private static @Nullable String detectVanillaWoodType(String path) {
