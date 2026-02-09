@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#examplemod:tfc_land_biomes",
+    "#examplemod:tfc_coastal_biomes"
+  ]
+}
