@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
@@ -274,18 +273,6 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         return "wrought_iron";
     }
 
-    @Override
-    public java.util.List<StructureTemplate.StructureBlockInfo> finalizeProcessing(
-            net.minecraft.world.level.ServerLevelAccessor level,
-            BlockPos structurePos,
-            BlockPos structureOrigin,
-            java.util.List<StructureTemplate.StructureBlockInfo> originalBlocks,
-            java.util.List<StructureTemplate.StructureBlockInfo> processedBlocks,
-            StructurePlaceSettings settings) {
-        // Fix up blocks that require knowledge of nearby blocks in the same template (ex: TFC bookshelves have facing).
-        return orientBookshelves(processedBlocks);
-    }
-
     private static @Nullable net.minecraft.server.level.ServerLevel resolveServerLevel(LevelReader level) {
         if (level instanceof net.minecraft.server.level.ServerLevel sl) {
             return sl;
@@ -385,9 +372,9 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             case "iron_bars":
             case "chain":
             case "iron_trapdoor":
-            case "anvil":
-            case "chipped_anvil":
-            case "damaged_anvil":
+            // case "anvil":
+            // case "chipped_anvil":
+            // case "damaged_anvil":
                 return mapMetal(vanillaPath);
             default:
                 break;
@@ -418,16 +405,12 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
                 return tfcWood("wood/chest/", woodHint);
             case "trapped_chest":
                 return tfcWood("wood/trapped_chest/", woodHint);
-            case "barrel":
-                return tfcWood("wood/barrel/", woodHint);
             case "lectern":
                 return tfcWood("wood/lectern/", woodHint);
             case "crafting_table":
                 return tfcWood("wood/workbench/", woodHint);
-            case "smithing_table":
-                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "quern");
-            case "bookshelf":
-                return tfcWood("wood/bookshelf/", woodHint);
+            // case "smithing_table":
+            //     return ResourceLocation.fromNamespaceAndPath(NS_TFC, "quern");
             default:
                 return null;
         }
@@ -592,16 +575,12 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
                 return tfcWood("wood/chest/", woodHint);
             case "trapped_chest":
                 return tfcWood("wood/trapped_chest/", woodHint);
-            case "barrel":
-                return tfcWood("wood/barrel/", woodHint);
             case "lectern":
                 return tfcWood("wood/lectern/", woodHint);
             case "crafting_table":
                 return tfcWood("wood/workbench/", woodHint);
-            case "smithing_table":
-                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "quern");
-            case "bookshelf":
-                return tfcWood("wood/bookshelf/", woodHint);
+            // case "smithing_table":
+            //     return ResourceLocation.fromNamespaceAndPath(NS_TFC, "quern");
             default:
                 break;
         }
@@ -742,10 +721,10 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             case "oxidized_cut_copper_stairs":
             case "waxed_oxidized_cut_copper_stairs":
                 return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/oxidized_block/copper_stairs");
-            case "anvil":
-            case "chipped_anvil":
-            case "damaged_anvil":
-                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/anvil/wrought_iron");
+            // case "anvil":
+            // case "chipped_anvil":
+            // case "damaged_anvil":
+            //     return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/anvil/wrought_iron");
             default:
                 return null;
         }
@@ -915,82 +894,6 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
     private static @Nullable ResourceLocation tfcItem(String path) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NS_TFC, path);
         return BuiltInRegistries.ITEM.containsKey(id) ? id : null;
-    }
-
-    private static java.util.List<StructureTemplate.StructureBlockInfo> orientBookshelves(
-            java.util.List<StructureTemplate.StructureBlockInfo> blocks) {
-        // Always copy: some structure placement paths pass unmodifiable lists here.
-        java.util.ArrayList<StructureTemplate.StructureBlockInfo> outBlocks = new java.util.ArrayList<>(blocks);
-
-        java.util.HashMap<BlockPos, BlockState> byPos = new java.util.HashMap<>(outBlocks.size() * 2);
-        for (StructureTemplate.StructureBlockInfo info : outBlocks) {
-            byPos.put(info.pos(), info.state());
-        }
-
-        for (int i = 0; i < outBlocks.size(); i++) {
-            StructureTemplate.StructureBlockInfo info = outBlocks.get(i);
-            BlockState state = info.state();
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
-            if (!NS_TFC.equals(id.getNamespace())) continue;
-            if (!id.getPath().startsWith("wood/bookshelf/")) continue;
-
-            DirectionProperty facingProp = null;
-            Property<?> prop = state.getBlock().getStateDefinition().getProperty("facing");
-            if (prop instanceof DirectionProperty dp) {
-                facingProp = dp;
-            }
-            if (facingProp == null) continue;
-
-            net.minecraft.core.Direction desired = guessFrontFacingForShelf(info.pos(), byPos);
-            if (desired == null) continue;
-
-            try {
-                BlockState newState = state.setValue(facingProp, desired);
-                outBlocks.set(
-                        i, new StructureTemplate.StructureBlockInfo(info.pos(), newState, info.nbt()));
-            } catch (Exception ignored) {
-                // Defensive: if facing can't be applied, leave as-is.
-            }
-        }
-
-        return outBlocks;
-    }
-
-    private static @Nullable net.minecraft.core.Direction guessFrontFacingForShelf(
-            BlockPos pos, java.util.Map<BlockPos, BlockState> byPos) {
-        // Prefer: face away from a single "solid backing" block (stone bricks, etc).
-        @Nullable net.minecraft.core.Direction backing = null;
-        for (net.minecraft.core.Direction dir : net.minecraft.core.Direction.Plane.HORIZONTAL) {
-            BlockState neighbor = byPos.get(pos.relative(dir));
-            if (neighbor == null || neighbor.isAir()) continue;
-
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(neighbor.getBlock());
-            if (NS_TFC.equals(id.getNamespace()) && id.getPath().startsWith("wood/bookshelf/")) {
-                continue;
-            }
-
-            if (backing != null) {
-                backing = null; // ambiguous
-                break;
-            }
-            backing = dir;
-        }
-        if (backing != null) {
-            return backing.getOpposite();
-        }
-
-        // Fallback: face towards the only side that is "air" within the template.
-        @Nullable net.minecraft.core.Direction air = null;
-        for (net.minecraft.core.Direction dir : net.minecraft.core.Direction.Plane.HORIZONTAL) {
-            BlockState neighbor = byPos.get(pos.relative(dir));
-            boolean isAir = neighbor == null || neighbor.isAir();
-            if (!isAir) continue;
-            if (air != null) {
-                return null; // ambiguous
-            }
-            air = dir;
-        }
-        return air;
     }
 
     private static @Nullable String detectVanillaWoodType(String path) {
