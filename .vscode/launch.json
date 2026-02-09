@@ -47,7 +47,7 @@
         "-XX:HeapDumpPath\u003dMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump",
         "-Dforge.logging.markers\u003dREGISTRIES",
         "-Dforge.logging.console.level\u003ddebug",
-        "-Dneoforge.enabledGameTestNamespaces\u003dexamplemod",
+        "-Dneoforge.enabledGameTestNamespaces\u003dyungsbettertfc",
         "-Dneoforge.enableGameTest\u003dtrue",
         "-DlegacyClassPath.file\u003dC:\\Users\\claustra01\\workspace\\yungs_better_tfc\\.gradle\\configuration\\neoForm\\neoFormJoined1.21.1-20240808.144430\\steps\\writeMinecraftClasspathClient\\classpath.txt",
         "-DignoreList\u003dmixinextras-neoforge-0.5.0.jar,client-extra,neoforge-",
@@ -55,7 +55,7 @@
       ],
       "cwd": "${workspaceFolder}\\runs\\client",
       "env": {
-        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     },
@@ -71,7 +71,7 @@
       "mainClass": "cpw.mods.bootstraplauncher.BootstrapLauncher",
       "args": [
         "--mod",
-        "examplemod",
+        "yungsbettertfc",
         "--all",
         "--output",
         "C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\src\\generated\\resources",
@@ -115,7 +115,7 @@
       ],
       "cwd": "${workspaceFolder}\\runs\\data",
       "env": {
-        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     },
@@ -158,7 +158,7 @@
         "jdk.naming.dns/com.sun.jndi.dns\u003djava.naming",
         "-Dforge.logging.markers\u003dREGISTRIES",
         "-Dforge.logging.console.level\u003ddebug",
-        "-Dneoforge.enabledGameTestNamespaces\u003dexamplemod",
+        "-Dneoforge.enabledGameTestNamespaces\u003dyungsbettertfc",
         "-Dneoforge.enableGameTest\u003dtrue",
         "-Dneoforge.gameTestServer\u003dtrue",
         "-DlegacyClassPath.file\u003dC:\\Users\\claustra01\\workspace\\yungs_better_tfc\\.gradle\\configuration\\neoForm\\neoFormJoined1.21.1-20240808.144430\\steps\\writeMinecraftClasspathGameTestServer\\classpath.txt",
@@ -167,7 +167,7 @@
       ],
       "cwd": "${workspaceFolder}\\runs\\gameTestServer",
       "env": {
-        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     },
@@ -223,7 +223,7 @@
       ],
       "cwd": "${workspaceFolder}\\runs\\junit",
       "env": {
-        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     },
@@ -267,14 +267,14 @@
         "jdk.naming.dns/com.sun.jndi.dns\u003djava.naming",
         "-Dforge.logging.markers\u003dREGISTRIES",
         "-Dforge.logging.console.level\u003ddebug",
-        "-Dneoforge.enabledGameTestNamespaces\u003dexamplemod",
+        "-Dneoforge.enabledGameTestNamespaces\u003dyungsbettertfc",
         "-DlegacyClassPath.file\u003dC:\\Users\\claustra01\\workspace\\yungs_better_tfc\\.gradle\\configuration\\neoForm\\neoFormJoined1.21.1-20240808.144430\\steps\\writeMinecraftClasspathServer\\classpath.txt",
         "-DignoreList\u003dmixinextras-neoforge-0.5.0.jar,client-extra,neoforge-",
         "-Djava.net.preferIPv6Addresses\u003dsystem"
       ],
       "cwd": "${workspaceFolder}\\runs\\server",
       "env": {
-        "MOD_CLASSES": "yungs_better_tfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
+        "MOD_CLASSES": "yungsbettertfc%%C:\\Users\\claustra01\\workspace\\yungs_better_tfc\\bin\\main"
       },
       "shortenCommandLine": "argfile"
     }

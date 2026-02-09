@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#examplemod:tfc_land_biomes",
-    "#examplemod:tfc_coastal_biomes"
+    "#yungsbettertfc:tfc_land_biomes",
+    "#yungsbettertfc:tfc_coastal_biomes"
   ]
 }
