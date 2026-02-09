@@ -81,6 +81,17 @@
     "tfc:tuyas",
     "tfc:volcanic_mountains",
     "tfc:volcanic_oceanic_mountains",
-    "tfc:whorled_canyons"
+    "tfc:whorled_canyons",
+    "tfc:lake",
+    "tfc:meltwater_lake",
+    "tfc:mountain_lake",
+    "tfc:old_mountain_lake",
+    "tfc:oceanic_mountain_lake",
+    "tfc:plateau_lake",
+    "tfc:river",
+    "tfc:subglacial_lake",
+    "tfc:tower_karst_lake",
+    "tfc:volcanic_mountain_lake",
+    "tfc:volcanic_oceanic_mountain_lake"
   ]
 }

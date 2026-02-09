@@ -7,9 +7,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.Set;
 import javax.annotation.Nullable;
 import net.claustra01.yungsbettertfc.ModStructureProcessors;
+import net.claustra01.yungsbettertfc.access.StructureTemplateIdAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.WorldGenLevel;
@@ -27,8 +29,8 @@ import org.slf4j.Logger;
 /**
  * Replaces certain vanilla blocks in jigsaw structures with TerraFirmaCraft equivalents.
  *
- * <p>This is intentionally conservative: it avoids replacing functional blocks (containers/spawners/etc.)
- * and focuses on building materials (stone, wood, some metal) where TFC differs significantly.</p>
+ * <p>This focuses on blocks where TFC differs significantly from vanilla, and on blocks that have TFC variants
+ * (stone/wood/metal/soil/plants/decor).</p>
  */
 public final class TfcBlockReplacementProcessor extends StructureProcessor {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -40,7 +42,11 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
     private static final String NS_MINECRAFT = "minecraft";
     private static final String NS_TFC = "tfc";
 
-    private static final String DEFAULT_ROCK = "granite";
+    private static final String DEFAULT_ROCK_OVERWORLD = "granite";
+    private static final String DEFAULT_ROCK_NETHER = "basalt";
+    private static final String DEFAULT_ROCK_END = "granite";
+
+    private static final String DEFAULT_SOIL = "mollisol";
     private static final String DEFAULT_WOOD = "oak";
 
     private static final Set<String> VANILLA_WOOD_TYPES =
@@ -53,12 +59,19 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
                     "dark_oak",
                     "mangrove",
                     "cherry",
-                    "bamboo",
-                    "crimson",
-                    "warped");
+                    "bamboo");
 
     private static final ThreadLocal<Long2ObjectOpenHashMap<String>> ROCK_CACHE =
             ThreadLocal.withInitial(Long2ObjectOpenHashMap::new);
+    private static final ThreadLocal<Long2ObjectOpenHashMap<String>> SOIL_CACHE =
+            ThreadLocal.withInitial(Long2ObjectOpenHashMap::new);
+    private static final ThreadLocal<Long2ObjectOpenHashMap<String>> WOOD_CACHE =
+            ThreadLocal.withInitial(Long2ObjectOpenHashMap::new);
+
+    private enum ReplacementScope {
+        FULL,
+        UTILITY_ONLY
+    }
 
     private TfcBlockReplacementProcessor() {}
 
@@ -77,11 +90,11 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             StructurePlaceSettings settings,
             @Nullable StructureTemplate template) {
         // In worldgen, the "level" is usually a WorldGenLevel/WorldGenRegion, not a ServerLevel.
-        // We resolve the underlying ServerLevel to perform a dimension guard.
+        // We resolve the underlying ServerLevel for dimension-specific defaults.
         var serverLevel = resolveServerLevel(level);
-        // Only apply in the overworld (TFC overworld replacement).
+        ReplacementScope scope = ReplacementScope.FULL;
         if (serverLevel != null && serverLevel.dimension() != Level.OVERWORLD) {
-            return processedBlockInfo;
+            scope = ReplacementScope.UTILITY_ONLY;
         }
 
         BlockState in = processedBlockInfo.state();
@@ -104,21 +117,58 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             path = path.substring("infested_".length());
         }
 
-        // Determine rock name once per template placement origin (offset).
-        Long2ObjectOpenHashMap<String> cache = ROCK_CACHE.get();
-        if (cache.size() > 2048) {
-            cache.clear();
-        }
-        String rock = cache.get(offset.asLong());
-        if (rock == null) {
-            rock = findRockNameBelow(level, offset);
-            if (rock == null) {
-                rock = DEFAULT_ROCK;
+        // Cache context once per template placement origin (offset).
+        long cacheKey = offset.asLong();
+        String rock = DEFAULT_ROCK_OVERWORLD;
+        String soil = DEFAULT_SOIL;
+        if (scope == ReplacementScope.FULL) {
+            String defaultRock = defaultRockFor(serverLevel);
+
+            Long2ObjectOpenHashMap<String> rockCache = ROCK_CACHE.get();
+            if (rockCache.size() > 2048) {
+                rockCache.clear();
             }
-            cache.put(offset.asLong(), rock);
+            String cachedRock = rockCache.get(cacheKey);
+            if (cachedRock == null) {
+                cachedRock = findRockNameBelow(level, offset);
+                if (cachedRock == null) {
+                    cachedRock = defaultRock;
+                }
+                rockCache.put(cacheKey, cachedRock);
+            }
+            rock = cachedRock;
+
+            Long2ObjectOpenHashMap<String> soilCache = SOIL_CACHE.get();
+            if (soilCache.size() > 2048) {
+                soilCache.clear();
+            }
+            String cachedSoil = soilCache.get(cacheKey);
+            if (cachedSoil == null) {
+                cachedSoil = findSoilNameBelow(level, offset);
+                if (cachedSoil == null) {
+                    cachedSoil = DEFAULT_SOIL;
+                }
+                soilCache.put(cacheKey, cachedSoil);
+            }
+            soil = cachedSoil;
         }
 
-        @Nullable ResourceLocation outId = mapVanillaToTfc(path, rock, infested);
+        Long2ObjectOpenHashMap<String> woodCache = WOOD_CACHE.get();
+        if (woodCache.size() > 2048) {
+            woodCache.clear();
+        }
+        String woodHint = woodCache.get(cacheKey);
+        if (woodHint == null) {
+            @Nullable String detected = detectVanillaWoodType(path);
+            if (detected != null) {
+                woodHint = detected;
+                woodCache.put(cacheKey, woodHint);
+            } else {
+                woodHint = DEFAULT_WOOD;
+            }
+        }
+
+        @Nullable ResourceLocation outId = mapVanillaToTfc(path, rock, soil, woodHint, infested, scope);
         if (outId == null) {
             return processedBlockInfo;
         }
@@ -130,12 +180,19 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
 
         BlockState out = copyPropertiesByName(in, outBlock.defaultBlockState());
         if (LOGGED_FIRST_REPLACEMENT.compareAndSet(false, true)) {
+            @Nullable ResourceLocation templateId = null;
+            if (template instanceof StructureTemplateIdAccess access) {
+                templateId = access.yungsbettertfc$getTemplateId();
+            }
             LOGGER.info(
-                    "Activated TFC block replacement processor. Example: {} -> {} (at {}, offset {}).",
+                    "Activated TFC block replacement processor. Example: {} -> {} (template {}, dim {}, rock {}, soil {}, wood {}).",
                     inId,
                     outId,
-                    processedBlockInfo.pos(),
-                    offset);
+                    templateId,
+                    serverLevel != null ? serverLevel.dimension().location() : null,
+                    rock,
+                    soil,
+                    woodHint);
         }
         return new StructureTemplate.StructureBlockInfo(processedBlockInfo.pos(), out, processedBlockInfo.nbt());
     }
@@ -150,15 +207,39 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         return null;
     }
 
-    private static @Nullable ResourceLocation mapVanillaToTfc(String vanillaPath, String rock, boolean infested) {
+    private static String defaultRockFor(@Nullable ServerLevel level) {
+        if (level == null) {
+            return DEFAULT_ROCK_OVERWORLD;
+        }
+        if (level.dimension() == Level.NETHER) {
+            return DEFAULT_ROCK_NETHER;
+        }
+        if (level.dimension() == Level.END) {
+            return DEFAULT_ROCK_END;
+        }
+        return DEFAULT_ROCK_OVERWORLD;
+    }
+
+    private static @Nullable ResourceLocation mapVanillaToTfc(
+            String vanillaPath, String rock, String soil, String woodHint, boolean infested, ReplacementScope scope) {
+        if (scope == ReplacementScope.UTILITY_ONLY) {
+            return mapUtilityOnly(vanillaPath, woodHint);
+        }
+
         // Stone families (rock-dependent).
         @Nullable ResourceLocation stone = mapStone(vanillaPath, rock, infested);
         if (stone != null) {
             return stone;
         }
 
+        // Soils (soil-dependent).
+        @Nullable ResourceLocation soilBlock = mapSoil(vanillaPath, soil);
+        if (soilBlock != null) {
+            return soilBlock;
+        }
+
         // Wood families.
-        @Nullable ResourceLocation wood = mapWood(vanillaPath);
+        @Nullable ResourceLocation wood = mapWood(vanillaPath, woodHint);
         if (wood != null) {
             return wood;
         }
@@ -169,21 +250,109 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             return metal;
         }
 
-        // Lights (TFC has its own torches).
-        if ("lantern".equals(vanillaPath)) {
-            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/lamp/wrought_iron");
+        // Plants + decor.
+        @Nullable ResourceLocation plantDecor = mapPlantsAndDecor(vanillaPath);
+        if (plantDecor != null) {
+            return plantDecor;
         }
-        if ("soul_lantern".equals(vanillaPath)) {
-            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/lamp/wrought_iron");
+
+        // Misc utilities.
+        @Nullable ResourceLocation cauldron = mapCauldron(vanillaPath);
+        if (cauldron != null) {
+            return cauldron;
         }
-        if ("torch".equals(vanillaPath)) {
-            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "torch");
-        }
-        if ("wall_torch".equals(vanillaPath)) {
-            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "wall_torch");
+
+        // Lights (TFC has its own torches / lamps).
+        @Nullable ResourceLocation lights = mapLights(vanillaPath);
+        if (lights != null) {
+            return lights;
         }
 
         return null;
+    }
+
+    private static @Nullable ResourceLocation mapUtilityOnly(String vanillaPath, String woodHint) {
+        // Wood utility blocks.
+        @Nullable ResourceLocation wood = mapWoodUtilityOnly(vanillaPath, woodHint);
+        if (wood != null) {
+            return wood;
+        }
+
+        // Metal utilities (bars/chain/etc).
+        switch (vanillaPath) {
+            case "iron_bars":
+            case "chain":
+            case "iron_trapdoor":
+            case "anvil":
+            case "chipped_anvil":
+            case "damaged_anvil":
+                return mapMetal(vanillaPath);
+            default:
+                break;
+        }
+
+        // Small decor we can safely convert.
+        @Nullable ResourceLocation plantDecor = mapPlantsAndDecor(vanillaPath);
+        if (plantDecor != null) {
+            return plantDecor;
+        }
+
+        @Nullable ResourceLocation cauldron = mapCauldron(vanillaPath);
+        if (cauldron != null) {
+            return cauldron;
+        }
+
+        @Nullable ResourceLocation lights = mapLights(vanillaPath);
+        if (lights != null) {
+            return lights;
+        }
+
+        return null;
+    }
+
+    private static @Nullable ResourceLocation mapWoodUtilityOnly(String vanillaPath, String woodHint) {
+        switch (vanillaPath) {
+            case "chest":
+                return tfcWood("wood/chest/", woodHint);
+            case "trapped_chest":
+                return tfcWood("wood/trapped_chest/", woodHint);
+            case "barrel":
+                return tfcWood("wood/barrel/", woodHint);
+            case "lectern":
+                return tfcWood("wood/lectern/", woodHint);
+            case "crafting_table":
+                return tfcWood("wood/workbench/", woodHint);
+            case "bookshelf":
+                return tfcWood("wood/bookshelf/", woodHint);
+            default:
+                return null;
+        }
+    }
+
+    private static @Nullable ResourceLocation mapCauldron(String vanillaPath) {
+        // TFC doesn't have a direct cauldron equivalent; large vessels are the closest decorative container.
+        switch (vanillaPath) {
+            case "cauldron":
+            case "water_cauldron":
+            case "lava_cauldron":
+            case "powder_snow_cauldron":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "ceramic/large_vessel");
+            default:
+                return null;
+        }
+    }
+
+    private static @Nullable ResourceLocation mapLights(String vanillaPath) {
+        switch (vanillaPath) {
+            case "lantern":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/lamp/wrought_iron");
+            case "torch":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "torch");
+            case "wall_torch":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "wall_torch");
+            default:
+                return null;
+        }
     }
 
     private static @Nullable ResourceLocation mapStone(String vanillaPath, String rock, boolean infested) {
@@ -257,6 +426,11 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
                 break;
         }
 
+        // Gravel
+        if ("gravel".equals(p)) {
+            return tfcRock("rock/gravel/", rock);
+        }
+
         // Andesite family (YUNG structures use these frequently for variation).
         switch (p) {
             case "andesite":
@@ -277,42 +451,12 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
                 break;
         }
 
-        // Other stone-like building blocks used as accents in YUNG templates.
+        // Redstone / interaction blocks with rock variants.
         switch (p) {
-            case "polished_blackstone":
-                return tfcRock("rock/smooth/", rock);
-            case "polished_blackstone_stairs":
-                return tfcRock("rock/smooth/", rock, "_stairs");
-            case "polished_blackstone_slab":
-                return tfcRock("rock/smooth/", rock, "_slab");
-            case "chiseled_polished_blackstone":
-                return tfcRock("rock/chiseled/", rock);
-            case "nether_bricks":
-                return tfcRock("rock/bricks/", rock);
-            case "nether_brick_stairs":
-                return tfcRock("rock/bricks/", rock, "_stairs");
-            case "nether_brick_slab":
-                return tfcRock("rock/bricks/", rock, "_slab");
-            case "nether_brick_wall":
-                return tfcRock("rock/bricks/", rock, "_wall");
-            case "red_nether_bricks":
-                return tfcRock("rock/bricks/", rock);
-            case "red_nether_brick_slab":
-                return tfcRock("rock/bricks/", rock, "_slab");
-            case "chiseled_nether_bricks":
-                return tfcRock("rock/chiseled/", rock);
-            case "sandstone":
-                return tfcRock("rock/raw/", rock);
-            case "red_sandstone_slab":
-                return tfcRock("rock/raw/", rock, "_slab");
-            case "bricks":
-                return tfcRock("rock/bricks/", rock);
-            case "brick_slab":
-                return tfcRock("rock/bricks/", rock, "_slab");
-            case "brick_stairs":
-                return tfcRock("rock/bricks/", rock, "_stairs");
-            case "end_stone_brick_slab":
-                return tfcRock("rock/bricks/", rock, "_slab");
+            case "stone_button":
+                return tfcRock("rock/button/", rock);
+            case "stone_pressure_plate":
+                return tfcRock("rock/pressure_plate/", rock);
             default:
                 break;
         }
@@ -320,7 +464,44 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         return null;
     }
 
-    private static @Nullable ResourceLocation mapWood(String vanillaPath) {
+    private static @Nullable ResourceLocation mapSoil(String vanillaPath, String soil) {
+        switch (vanillaPath) {
+            case "dirt":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "dirt/" + soil);
+            case "coarse_dirt":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "coarse_dirt/" + soil);
+            case "grass_block":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "grass/" + soil);
+            case "grass_path":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "grass_path/" + soil);
+            case "rooted_dirt":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "rooted_dirt/" + soil);
+            case "farmland":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "farmland/" + soil);
+            default:
+                return null;
+        }
+    }
+
+    private static @Nullable ResourceLocation mapWood(String vanillaPath, String woodHint) {
+        // Functional / decor blocks with TFC variants (no vanilla wood encoded).
+        switch (vanillaPath) {
+            case "chest":
+                return tfcWood("wood/chest/", woodHint);
+            case "trapped_chest":
+                return tfcWood("wood/trapped_chest/", woodHint);
+            case "barrel":
+                return tfcWood("wood/barrel/", woodHint);
+            case "lectern":
+                return tfcWood("wood/lectern/", woodHint);
+            case "crafting_table":
+                return tfcWood("wood/workbench/", woodHint);
+            case "bookshelf":
+                return tfcWood("wood/bookshelf/", woodHint);
+            default:
+                break;
+        }
+
         // Planks family: <wood>_planks, <wood>_stairs, <wood>_slab
         if (vanillaPath.endsWith("_planks")) {
             String wood = vanillaPath.substring(0, vanillaPath.length() - "_planks".length());
@@ -382,9 +563,28 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             return tfcWood("wood/trapdoor/", wood);
         }
 
-        // Vanilla bookshelf doesn't encode wood type; use oak by default.
-        if ("bookshelf".equals(vanillaPath)) {
-            return tfcWood("wood/bookshelf/", DEFAULT_WOOD);
+        if (vanillaPath.endsWith("_pressure_plate")) {
+            String wood = vanillaPath.substring(0, vanillaPath.length() - "_pressure_plate".length());
+            if (!isVanillaWood(wood)) return null;
+            return tfcWood("wood/pressure_plate/", wood);
+        }
+
+        if (vanillaPath.endsWith("_button")) {
+            String wood = vanillaPath.substring(0, vanillaPath.length() - "_button".length());
+            if (!isVanillaWood(wood)) return null;
+            return tfcWood("wood/button/", wood);
+        }
+
+        if (vanillaPath.endsWith("_wall_sign")) {
+            String wood = vanillaPath.substring(0, vanillaPath.length() - "_wall_sign".length());
+            if (!isVanillaWood(wood)) return null;
+            return tfcWood("wood/wall_sign/", wood);
+        }
+
+        if (vanillaPath.endsWith("_sign")) {
+            String wood = vanillaPath.substring(0, vanillaPath.length() - "_sign".length());
+            if (!isVanillaWood(wood)) return null;
+            return tfcWood("wood/sign/", wood);
         }
 
         return null;
@@ -406,6 +606,37 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
                 return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/trapdoor/wrought_iron");
             case "gold_block":
                 return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/block/gold");
+            case "copper_block":
+            case "cut_copper":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/block/copper");
+            case "cut_copper_slab":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/block/copper_slab");
+            case "cut_copper_stairs":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/block/copper_stairs");
+            case "exposed_copper":
+            case "exposed_cut_copper":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/exposed_block/copper");
+            case "exposed_cut_copper_slab":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/exposed_block/copper_slab");
+            case "exposed_cut_copper_stairs":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/exposed_block/copper_stairs");
+            case "weathered_copper":
+            case "weathered_cut_copper":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/weathered_block/copper");
+            case "weathered_cut_copper_slab":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/weathered_block/copper_slab");
+            case "weathered_cut_copper_stairs":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/weathered_block/copper_stairs");
+            case "oxidized_copper":
+            case "oxidized_cut_copper":
+            case "waxed_oxidized_cut_copper":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/oxidized_block/copper");
+            case "oxidized_cut_copper_slab":
+            case "waxed_oxidized_cut_copper_slab":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/oxidized_block/copper_slab");
+            case "oxidized_cut_copper_stairs":
+            case "waxed_oxidized_cut_copper_stairs":
+                return ResourceLocation.fromNamespaceAndPath(NS_TFC, "metal/oxidized_block/copper_stairs");
             case "anvil":
             case "chipped_anvil":
             case "damaged_anvil":
@@ -413,6 +644,71 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             default:
                 return null;
         }
+    }
+
+    private static @Nullable ResourceLocation mapPlantsAndDecor(String vanillaPath) {
+        // Kelp (TFC has multiple types; leafy kelp is the closest analogue to vanilla).
+        if ("kelp".equals(vanillaPath)) {
+            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "plant/leafy_kelp");
+        }
+        if ("kelp_plant".equals(vanillaPath)) {
+            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "plant/leafy_kelp_plant");
+        }
+
+        if ("sea_pickle".equals(vanillaPath)) {
+            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "sea_pickle");
+        }
+
+        // Flower pots.
+        if (vanillaPath.startsWith("potted_")) {
+            String plant = vanillaPath.substring("potted_".length());
+            ResourceLocation candidate = ResourceLocation.fromNamespaceAndPath(NS_TFC, "plant/potted/" + plant);
+            if (BuiltInRegistries.BLOCK.containsKey(candidate)) {
+                return candidate;
+            }
+        }
+
+        // Candles.
+        if ("candle".equals(vanillaPath)) {
+            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "candle");
+        }
+        if (vanillaPath.endsWith("_candle")) {
+            String color = vanillaPath.substring(0, vanillaPath.length() - "_candle".length());
+            ResourceLocation candidate = ResourceLocation.fromNamespaceAndPath(NS_TFC, "candle/" + color);
+            if (BuiltInRegistries.BLOCK.containsKey(candidate)) {
+                return candidate;
+            }
+        }
+        if ("candle_cake".equals(vanillaPath)) {
+            return ResourceLocation.fromNamespaceAndPath(NS_TFC, "candle_cake");
+        }
+        if (vanillaPath.endsWith("_candle_cake")) {
+            String color = vanillaPath.substring(0, vanillaPath.length() - "_candle_cake".length());
+            ResourceLocation candidate = ResourceLocation.fromNamespaceAndPath(NS_TFC, "candle_cake/" + color);
+            if (BuiltInRegistries.BLOCK.containsKey(candidate)) {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private static @Nullable String detectVanillaWoodType(String path) {
+        // Strip common prefixes first.
+        String p = path;
+        if (p.startsWith("stripped_")) {
+            p = p.substring("stripped_".length());
+        }
+        // Extract "<wood>_*".
+        int idx = p.indexOf('_');
+        if (idx <= 0) {
+            return null;
+        }
+        String wood = p.substring(0, idx);
+        if (!isVanillaWood(wood)) {
+            return null;
+        }
+        return wood;
     }
 
     private static ResourceLocation tfcRock(String prefix, String rock) {
@@ -471,6 +767,21 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         return null;
     }
 
+    private static @Nullable String findSoilNameBelow(LevelReader level, BlockPos start) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos(start.getX(), start.getY(), start.getZ());
+        int minY = level.getMinBuildHeight();
+
+        for (int i = 0; i < 64 && cursor.getY() >= minY; i++) {
+            BlockState state = level.getBlockState(cursor);
+            @Nullable String soil = soilNameFromTfcBlock(state);
+            if (soil != null) {
+                return soil;
+            }
+            cursor.move(0, -1, 0);
+        }
+        return null;
+    }
+
     private static @Nullable String rockNameFromTfcBlock(BlockState state) {
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
         if (!NS_TFC.equals(id.getNamespace())) {
@@ -485,6 +796,27 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         tail = stripSuffix(tail, "_stairs");
         tail = stripSuffix(tail, "_slab");
         tail = stripSuffix(tail, "_wall");
+        return tail.isEmpty() ? null : tail;
+    }
+
+    private static @Nullable String soilNameFromTfcBlock(BlockState state) {
+        ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+        if (!NS_TFC.equals(id.getNamespace())) {
+            return null;
+        }
+        String path = id.getPath();
+        // Soil-like blocks have the soil type as the last path segment.
+        if (!(path.startsWith("dirt/")
+                || path.startsWith("coarse_dirt/")
+                || path.startsWith("grass/")
+                || path.startsWith("grass_path/")
+                || path.startsWith("rooted_dirt/")
+                || path.startsWith("farmland/")
+                || path.startsWith("clay_grass/"))) {
+            return null;
+        }
+        int lastSlash = path.lastIndexOf('/');
+        String tail = lastSlash >= 0 ? path.substring(lastSlash + 1) : path;
         return tail.isEmpty() ? null : tail;
     }
 

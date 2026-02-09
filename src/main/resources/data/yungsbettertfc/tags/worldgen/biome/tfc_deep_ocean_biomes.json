@@ -3,6 +3,8 @@
   "values": [
     "tfc:deep_ocean",
     "tfc:deep_ocean_trench",
-    "tfc:ice_sheet_oceanic"
+    "tfc:ice_sheet_oceanic",
+    "tfc:ocean",
+    "tfc:ocean_reef"
   ]
 }
