@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import net.claustra01.yungsbettertfc.ModStructureProcessors;
 import net.claustra01.yungsbettertfc.access.StructureTemplateIdAccess;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -55,6 +56,8 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
 
     private static final String DEFAULT_SOIL = "mollisol";
     private static final String DEFAULT_WOOD = "oak";
+
+    private static final ResourceLocation TFC_FIREPIT = ResourceLocation.fromNamespaceAndPath(NS_TFC, "firepit");
 
     private static final Set<String> VANILLA_WOOD_TYPES =
             Set.of(
@@ -216,7 +219,35 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
                     soil,
                     woodHint);
         }
-        return new StructureTemplate.StructureBlockInfo(processedBlockInfo.pos(), out, processedBlockInfo.nbt());
+
+        CompoundTag outNbt = processedBlockInfo.nbt();
+        if (TFC_FIREPIT.equals(outId)) {
+            out = applyFirepitAxisFromFacing(in, out);
+            // Furnace/campfire block entity tags don't make sense on a firepit and can cause odd behavior.
+            outNbt = null;
+        }
+
+        return new StructureTemplate.StructureBlockInfo(processedBlockInfo.pos(), out, outNbt);
+    }
+
+    private static BlockState applyFirepitAxisFromFacing(BlockState from, BlockState firepit) {
+        if (!from.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            return firepit;
+        }
+
+        Direction facing = from.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        Direction.Axis axis = facing.getAxis();
+        if (axis != Direction.Axis.X && axis != Direction.Axis.Z) {
+            return firepit;
+        }
+
+        if (firepit.hasProperty(BlockStateProperties.HORIZONTAL_AXIS)) {
+            return firepit.setValue(BlockStateProperties.HORIZONTAL_AXIS, axis);
+        }
+        if (firepit.hasProperty(BlockStateProperties.AXIS)) {
+            return firepit.setValue(BlockStateProperties.AXIS, axis);
+        }
+        return firepit;
     }
 
     @Override
@@ -304,6 +335,12 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             boolean infested,
             ReplacementScope scope,
             boolean beneathNether) {
+        // Always replace vanilla fire/cooking blocks, even in UTILITY_ONLY scope.
+        @Nullable ResourceLocation firepit = mapFirepit(vanillaPath);
+        if (firepit != null) {
+            return firepit;
+        }
+
         if (scope == ReplacementScope.UTILITY_ONLY) {
             return mapUtilityOnly(vanillaPath, woodHint, beneathNether);
         }
@@ -351,6 +388,13 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         }
 
         return null;
+    }
+
+    private static @Nullable ResourceLocation mapFirepit(String vanillaPath) {
+        return switch (vanillaPath) {
+            case "furnace", "campfire", "soul_campfire" -> TFC_FIREPIT;
+            default -> null;
+        };
     }
 
     private static @Nullable ResourceLocation mapUtilityOnly(String vanillaPath, String woodHint, boolean beneathNether) {
