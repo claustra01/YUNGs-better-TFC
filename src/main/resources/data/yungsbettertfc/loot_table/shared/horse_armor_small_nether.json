@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:tag",
+          "name": "yungsbettertfc:loot/horse_armor/small_nether",
+          "expand": true
+        }
+      ]
+    }
+  ]
+}
+
