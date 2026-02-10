@@ -9,7 +9,7 @@
       },
       "entries": [
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -21,10 +21,10 @@
               }
             }
           ],
-          "name": "minecraft:charcoal"
+          "value": "yungsbettertfc:shared/coal_like"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -36,7 +36,7 @@
               }
             }
           ],
-          "name": "minecraft:coal"
+          "value": "yungsbettertfc:shared/coal_like"
         },
         {
           "type": "minecraft:item",
@@ -69,9 +69,9 @@
           "name": "minecraft:stick"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
-          "name": "minecraft:diamond"
+          "value": "yungsbettertfc:shared/gems"
         }
       ]
     }

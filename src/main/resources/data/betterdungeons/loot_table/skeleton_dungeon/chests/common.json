@@ -43,7 +43,7 @@
           "name": "minecraft:book"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -51,7 +51,7 @@
               "options": "#minecraft:on_random_loot"
             }
           ],
-          "name": "minecraft:bow"
+          "value": "yungsbettertfc:shared/ranged_weapon"
         },
         {
           "type": "minecraft:item",
@@ -231,7 +231,7 @@
       },
       "entries": [
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -243,10 +243,10 @@
               }
             }
           ],
-          "name": "minecraft:iron_ingot"
+          "value": "yungsbettertfc:shared/metals_overworld"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -258,7 +258,7 @@
               }
             }
           ],
-          "name": "minecraft:gold_ingot"
+          "value": "yungsbettertfc:shared/metals_overworld"
         },
         {
           "type": "minecraft:item",
@@ -306,7 +306,7 @@
           "name": "minecraft:bone"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -318,7 +318,7 @@
               }
             }
           ],
-          "name": "minecraft:bone_meal"
+          "value": "yungsbettertfc:shared/fertilizers"
         }
       ]
     }

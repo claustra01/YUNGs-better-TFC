@@ -9,8 +9,7 @@
       },
       "entries": [
         {
-          "name": "minecraft:coal",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 15,
           "functions": [
             {
@@ -21,7 +20,8 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/coal_like"
         },
         {
           "name": "minecraft:rotten_flesh",
@@ -54,8 +54,7 @@
           ]
         },
         {
-          "name": "minecraft:iron_ingot",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -66,11 +65,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/metals_small_nether"
         },
         {
-          "name": "minecraft:gold_ingot",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 15,
           "functions": [
             {
@@ -81,7 +80,8 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/metals_small_nether"
         },
         {
           "name": "minecraft:redstone",
@@ -123,8 +123,7 @@
           "type": "minecraft:item"
         },
         {
-          "name": "minecraft:golden_sword",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -136,11 +135,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
-          "name": "minecraft:golden_boots",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -152,11 +151,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
-          "name": "minecraft:golden_chestplate",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -168,11 +167,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
-          "name": "minecraft:golden_leggings",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -184,11 +183,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
-          "name": "minecraft:golden_helmet",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -200,11 +199,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
-          "name": "minecraft:iron_sword",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -216,11 +215,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
-          "name": "minecraft:chainmail_boots",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -232,11 +231,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
-          "name": "minecraft:chainmail_chestplate",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -248,11 +247,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
-          "name": "minecraft:chainmail_leggings",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -264,11 +263,11 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
-          "name": "minecraft:chainmail_helmet",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -280,7 +279,8 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/equipment_small_nether"
         },
         {
           "type": "minecraft:item",
@@ -352,8 +352,7 @@
       },
       "entries": [
         {
-          "name": "minecraft:coal",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 15,
           "functions": [
             {
@@ -364,7 +363,8 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/coal_like"
         },
         {
           "name": "minecraft:rotten_flesh",
@@ -397,8 +397,8 @@
           ]
         },
         {
-          "name": "minecraft:gold_nugget",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/metals_small_nether",
           "weight": 15,
           "functions": [
             {
@@ -412,8 +412,7 @@
           ]
         },
         {
-          "name": "minecraft:gold_ingot",
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 15,
           "functions": [
             {
@@ -424,7 +423,8 @@
                 "type": "minecraft:uniform"
               }
             }
-          ]
+          ],
+          "value": "yungsbettertfc:shared/metals_small_nether"
         },
         {
           "name": "minecraft:redstone",

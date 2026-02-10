@@ -24,7 +24,7 @@
           "name": "minecraft:bone"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -36,20 +36,20 @@
               }
             }
           ],
-          "name": "minecraft:bone_meal"
+          "value": "yungsbettertfc:shared/fertilizers"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 2,
-          "name": "minecraft:emerald"
+          "value": "yungsbettertfc:shared/gems"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 2,
-          "name": "minecraft:diamond"
+          "value": "yungsbettertfc:shared/gems"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 1,
           "functions": [
             {
@@ -61,7 +61,7 @@
               ]
             }
           ],
-          "name": "minecraft:diamond_sword"
+          "value": "yungsbettertfc:shared/equipment_overworld"
         }
       ]
     }

@@ -10,7 +10,7 @@
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 50,
           "functions": [
             {
@@ -23,10 +23,10 @@
               "add": false
             }
           ],
-          "name": "minecraft:iron_nugget"
+          "value": "yungsbettertfc:shared/metals_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 50,
           "functions": [
             {
@@ -39,10 +39,10 @@
               "add": false
             }
           ],
-          "name": "minecraft:gold_nugget"
+          "value": "yungsbettertfc:shared/metals_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 50,
           "functions": [
             {
@@ -55,10 +55,10 @@
               "add": false
             }
           ],
-          "name": "minecraft:iron_ingot"
+          "value": "yungsbettertfc:shared/metals_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 50,
           "functions": [
             {
@@ -71,7 +71,7 @@
               "add": false
             }
           ],
-          "name": "minecraft:gold_ingot"
+          "value": "yungsbettertfc:shared/metals_nether_fortress"
         },
         {
           "type": "minecraft:item",
@@ -90,9 +90,9 @@
           "name": "minecraft:nether_wart"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 25,
-          "name": "minecraft:diamond"
+          "value": "yungsbettertfc:shared/gems"
         }
       ]
     }

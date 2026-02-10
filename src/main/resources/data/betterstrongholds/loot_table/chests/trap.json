@@ -9,7 +9,7 @@
       },
       "entries": [
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 1,
           "functions": [
             {
@@ -21,10 +21,10 @@
               }
             }
           ],
-          "name": "minecraft:iron_ingot"
+          "value": "yungsbettertfc:shared/metals_stronghold"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 1,
           "functions": [
             {
@@ -36,10 +36,10 @@
               }
             }
           ],
-          "name": "minecraft:gold_ingot"
+          "value": "yungsbettertfc:shared/metals_stronghold"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 1,
           "functions": [
             {
@@ -51,10 +51,10 @@
               }
             }
           ],
-          "name": "minecraft:diamond"
+          "value": "yungsbettertfc:shared/gems"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 1,
           "functions": [
             {
@@ -66,7 +66,7 @@
               }
             }
           ],
-          "name": "minecraft:emerald"
+          "value": "yungsbettertfc:shared/gems"
         },
         {
           "type": "minecraft:item",

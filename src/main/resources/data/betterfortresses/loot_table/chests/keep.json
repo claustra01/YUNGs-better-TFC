@@ -26,7 +26,7 @@
           "name": "minecraft:flint"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 100,
           "functions": [
             {
@@ -39,7 +39,7 @@
               "add": false
             }
           ],
-          "name": "minecraft:coal"
+          "value": "yungsbettertfc:shared/coal_like"
         },
         {
           "type": "minecraft:item",
@@ -127,7 +127,7 @@
           "name": "minecraft:diamond_horse_armor"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 20,
           "functions": [
             {
@@ -140,121 +140,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:stone_sword"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
-          "weight": 20,
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "options": "#minecraft:on_random_loot",
-              "levels": 10.0
-            },
-            {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.8,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
-            }
-          ],
-          "name": "minecraft:stone_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 10,
-          "functions": [
-            {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.8,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
-            }
-          ],
-          "name": "minecraft:iron_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "options": "#minecraft:on_random_loot",
-              "levels": 20.0
-            },
-            {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.8,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
-            }
-          ],
-          "name": "minecraft:iron_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "functions": [
-            {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.8,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
-            }
-          ],
-          "name": "minecraft:golden_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "options": "#minecraft:on_random_loot",
-              "levels": 30.0
-            },
-            {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.8,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
-            }
-          ],
-          "name": "minecraft:golden_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 20,
-          "functions": [
-            {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.8,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
-            }
-          ],
-          "name": "minecraft:leather_helmet"
-        },
-        {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 20,
           "functions": [
             {
@@ -272,10 +161,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:leather_helmet"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -288,10 +177,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:chainmail_helmet"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -309,10 +198,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:chainmail_helmet"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -325,10 +214,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:golden_helmet"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -346,10 +235,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:golden_helmet"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 20,
           "functions": [
             {
@@ -362,10 +251,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:leather_chestplate"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 20,
           "functions": [
             {
@@ -383,10 +272,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:leather_chestplate"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -399,10 +288,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:chainmail_chestplate"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -420,10 +309,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:chainmail_chestplate"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -436,10 +325,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:golden_chestplate"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -457,10 +346,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:golden_chestplate"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 20,
           "functions": [
             {
@@ -473,10 +362,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:leather_leggings"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 20,
           "functions": [
             {
@@ -494,10 +383,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:leather_leggings"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -510,10 +399,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:chainmail_leggings"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -531,10 +420,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:chainmail_leggings"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -547,10 +436,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:golden_leggings"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -568,10 +457,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:golden_leggings"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 20,
           "functions": [
             {
@@ -584,10 +473,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:leather_boots"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 20,
           "functions": [
             {
@@ -605,10 +494,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:leather_boots"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -621,10 +510,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:chainmail_boots"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -642,10 +531,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:chainmail_boots"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -658,10 +547,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:golden_boots"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
           "functions": [
             {
@@ -679,7 +568,118 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:golden_boots"
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "weight": 20,
+          "functions": [
+            {
+              "add": false,
+              "damage": {
+                "type": "minecraft:uniform",
+                "max": 0.8,
+                "min": 0.1
+              },
+              "function": "minecraft:set_damage"
+            }
+          ],
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "options": "#minecraft:on_random_loot",
+              "levels": 10.0
+            },
+            {
+              "add": false,
+              "damage": {
+                "type": "minecraft:uniform",
+                "max": 0.8,
+                "min": 0.1
+              },
+              "function": "minecraft:set_damage"
+            }
+          ],
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "weight": 10,
+          "functions": [
+            {
+              "add": false,
+              "damage": {
+                "type": "minecraft:uniform",
+                "max": 0.8,
+                "min": 0.1
+              },
+              "function": "minecraft:set_damage"
+            }
+          ],
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "options": "#minecraft:on_random_loot",
+              "levels": 20.0
+            },
+            {
+              "add": false,
+              "damage": {
+                "type": "minecraft:uniform",
+                "max": 0.8,
+                "min": 0.1
+              },
+              "function": "minecraft:set_damage"
+            }
+          ],
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "weight": 5,
+          "functions": [
+            {
+              "add": false,
+              "damage": {
+                "type": "minecraft:uniform",
+                "max": 0.8,
+                "min": 0.1
+              },
+              "function": "minecraft:set_damage"
+            }
+          ],
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "options": "#minecraft:on_random_loot",
+              "levels": 30.0
+            },
+            {
+              "add": false,
+              "damage": {
+                "type": "minecraft:uniform",
+                "max": 0.8,
+                "min": 0.1
+              },
+              "function": "minecraft:set_damage"
+            }
+          ],
+          "value": "yungsbettertfc:shared/equipment_nether_fortress"
         }
       ]
     }

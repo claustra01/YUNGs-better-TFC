@@ -9,7 +9,7 @@
       },
       "entries": [
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 1,
           "functions": [
             {
@@ -23,7 +23,7 @@
               "target": "item_name"
             }
           ],
-          "name": "minecraft:diamond_sword"
+          "value": "yungsbettertfc:shared/equipment_stronghold"
         }
       ]
     }

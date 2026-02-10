@@ -57,9 +57,9 @@
           "name": "minecraft:flint_and_steel"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 5,
-          "name": "minecraft:diamond"
+          "value": "yungsbettertfc:shared/gems"
         }
       ]
     }
