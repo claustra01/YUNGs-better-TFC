@@ -40,18 +40,18 @@
           "weight": 20
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_horse_armor",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_overworld",
           "weight": 10
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_horse_armor",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_overworld",
           "weight": 15
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond_horse_armor",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_overworld",
           "weight": 5
         },
         {
@@ -76,7 +76,7 @@
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -88,11 +88,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:iron_ingot",
+          "value": "yungsbettertfc:shared/metals_overworld",
           "weight": 10
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -104,16 +104,16 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:gold_ingot",
+          "value": "yungsbettertfc:shared/metals_overworld",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:bread",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/produce",
           "weight": 20
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -125,7 +125,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:wheat",
+          "value": "yungsbettertfc:shared/produce",
           "weight": 20
         },
         {
@@ -150,7 +150,7 @@
           "weight": 15
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -162,11 +162,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:coal",
+          "value": "yungsbettertfc:shared/coal_like",
           "weight": 15
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -178,11 +178,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:melon_seeds",
+          "value": "yungsbettertfc:shared/seeds",
           "weight": 10
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -194,11 +194,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:pumpkin_seeds",
+          "value": "yungsbettertfc:shared/seeds",
           "weight": 10
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -210,7 +210,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:beetroot_seeds",
+          "value": "yungsbettertfc:shared/seeds",
           "weight": 10
         }
       ],

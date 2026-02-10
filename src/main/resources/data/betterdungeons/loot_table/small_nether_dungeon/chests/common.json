@@ -119,8 +119,8 @@
           "weight": 3
         },
         {
-          "name": "minecraft:golden_horse_armor",
-          "type": "minecraft:item"
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_small_nether"
         },
         {
           "type": "minecraft:loot_table",

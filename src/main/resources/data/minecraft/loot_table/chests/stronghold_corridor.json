@@ -10,7 +10,7 @@
           "weight": 10
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -22,11 +22,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:diamond",
+          "value": "yungsbettertfc:shared/gems",
           "weight": 3
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -38,11 +38,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:iron_ingot",
+          "value": "yungsbettertfc:shared/metals_stronghold",
           "weight": 10
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -54,7 +54,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:gold_ingot",
+          "value": "yungsbettertfc:shared/metals_stronghold",
           "weight": 5
         },
         {
@@ -74,7 +74,7 @@
           "weight": 5
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -86,11 +86,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:bread",
+          "value": "yungsbettertfc:shared/produce",
           "weight": 15
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -102,37 +102,37 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:apple",
+          "value": "yungsbettertfc:shared/produce",
           "weight": 15
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_pickaxe",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/equipment_stronghold",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_sword",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/equipment_stronghold",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_chestplate",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/equipment_stronghold",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_helmet",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/equipment_stronghold",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_leggings",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/equipment_stronghold",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_boots",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/equipment_stronghold",
           "weight": 5
         },
         {
@@ -144,16 +144,16 @@
           "name": "minecraft:saddle"
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_horse_armor"
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_stronghold"
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_horse_armor"
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_stronghold"
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond_horse_armor"
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_stronghold"
         },
         {
           "type": "minecraft:item",

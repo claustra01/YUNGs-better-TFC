@@ -9,7 +9,7 @@
       },
       "entries": [
         {
-          "type": "minecraft:loot_table",
+          "type": "minecraft:item",
           "weight": 10,
           "functions": [
             {
@@ -21,7 +21,7 @@
               }
             }
           ],
-          "value": "yungsbettertfc:shared/coal_like"
+          "name": "minecraft:charcoal"
         },
         {
           "type": "minecraft:loot_table",

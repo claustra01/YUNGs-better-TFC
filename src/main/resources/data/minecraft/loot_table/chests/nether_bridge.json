@@ -5,7 +5,7 @@
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -17,11 +17,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:diamond",
+          "value": "yungsbettertfc:shared/gems",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -33,11 +33,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:iron_ingot",
+          "value": "yungsbettertfc:shared/metals_nether_fortress",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -49,17 +49,17 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:gold_ingot",
+          "value": "yungsbettertfc:shared/metals_nether_fortress",
           "weight": 15
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_sword",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/equipment_nether_fortress",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_chestplate",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/equipment_nether_fortress",
           "weight": 5
         },
         {
@@ -89,18 +89,18 @@
           "weight": 10
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_horse_armor",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_nether_fortress",
           "weight": 8
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_horse_armor",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_nether_fortress",
           "weight": 5
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond_horse_armor",
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_nether_fortress",
           "weight": 3
         },
         {

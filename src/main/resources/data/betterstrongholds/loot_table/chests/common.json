@@ -141,16 +141,16 @@
           "name": "minecraft:ender_pearl"
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_horse_armor"
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_stronghold"
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_horse_armor"
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_stronghold"
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond_horse_armor"
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/horse_armor_stronghold"
         },
         {
           "type": "minecraft:item",

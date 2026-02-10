@@ -79,7 +79,7 @@
           "name": "minecraft:saddle"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 10,
           "functions": [
             {
@@ -92,10 +92,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:iron_horse_armor"
+          "value": "yungsbettertfc:shared/horse_armor_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 7,
           "functions": [
             {
@@ -108,10 +108,10 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:golden_horse_armor"
+          "value": "yungsbettertfc:shared/horse_armor_nether_fortress"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 4,
           "functions": [
             {
@@ -124,7 +124,7 @@
               "function": "minecraft:set_damage"
             }
           ],
-          "name": "minecraft:diamond_horse_armor"
+          "value": "yungsbettertfc:shared/horse_armor_nether_fortress"
         },
         {
           "type": "minecraft:loot_table",

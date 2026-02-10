@@ -84,7 +84,7 @@
           "name": "minecraft:cookie"
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "weight": 3,
           "functions": [
             {
@@ -96,7 +96,7 @@
               }
             }
           ],
-          "name": "minecraft:beetroot"
+          "value": "yungsbettertfc:shared/produce"
         },
         {
           "type": "minecraft:loot_table",

@@ -5,7 +5,7 @@
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -17,11 +17,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:iron_ingot",
+          "value": "yungsbettertfc:shared/metals_stronghold",
           "weight": 10
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -33,7 +33,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:gold_ingot",
+          "value": "yungsbettertfc:shared/metals_stronghold",
           "weight": 5
         },
         {
@@ -53,7 +53,7 @@
           "weight": 5
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -65,11 +65,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:coal",
+          "value": "yungsbettertfc:shared/coal_like",
           "weight": 10
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -81,11 +81,11 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:bread",
+          "value": "yungsbettertfc:shared/produce",
           "weight": 15
         },
         {
-          "type": "minecraft:item",
+          "type": "minecraft:loot_table",
           "functions": [
             {
               "add": false,
@@ -97,12 +97,12 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:apple",
+          "value": "yungsbettertfc:shared/produce",
           "weight": 15
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_pickaxe"
+          "type": "minecraft:loot_table",
+          "value": "yungsbettertfc:shared/equipment_stronghold"
         },
         {
           "type": "minecraft:item",
