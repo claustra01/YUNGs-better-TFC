@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
+    "tfc:metal/ingot/wrought_iron",
     "tfc:metal/ingot/steel",
-    "tfc:metal/ingot/black_steel",
     "tfc:metal/ingot/gold",
     "tfc:metal/ingot/silver",
     "tfc:metal/ingot/nickel"
