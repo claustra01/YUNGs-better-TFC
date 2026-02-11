@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "tfc:metal/sheet/black_bronze",
+    "tfc:metal/sheet/steel"
+  ]
+}
+

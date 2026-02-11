@@ -5,25 +5,40 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:alternatives",
-          "children": [
-            {
-              "type": "minecraft:tag",
-              "name": "yungsbettertfc:loot/metals/nether_fortress_rare",
-              "expand": true,
-              "conditions": [
-                {
-                  "condition": "minecraft:random_chance",
-                  "chance": 0.2
-                }
-              ]
-            },
-            {
-              "type": "minecraft:tag",
-              "name": "yungsbettertfc:loot/metals/nether_fortress_common",
-              "expand": true
-            }
-          ]
+          "type": "minecraft:tag",
+          "name": "yungsbettertfc:loot/metals_sheet/nether_fortress_rare",
+          "expand": true,
+          "weight": 1
+        },
+        {
+          "type": "minecraft:tag",
+          "name": "yungsbettertfc:loot/metals_rod/nether_fortress_rare",
+          "expand": true,
+          "weight": 3
+        },
+        {
+          "type": "minecraft:tag",
+          "name": "yungsbettertfc:loot/metals_ingot/nether_fortress_rare",
+          "expand": true,
+          "weight": 6
+        },
+        {
+          "type": "minecraft:tag",
+          "name": "yungsbettertfc:loot/metals_sheet/nether_fortress_common",
+          "expand": true,
+          "weight": 4
+        },
+        {
+          "type": "minecraft:tag",
+          "name": "yungsbettertfc:loot/metals_rod/nether_fortress_common",
+          "expand": true,
+          "weight": 12
+        },
+        {
+          "type": "minecraft:tag",
+          "name": "yungsbettertfc:loot/metals_ingot/nether_fortress_common",
+          "expand": true,
+          "weight": 24
         }
       ]
     }

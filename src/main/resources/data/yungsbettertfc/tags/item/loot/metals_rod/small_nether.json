@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "tfc:metal/rod/wrought_iron",
+    "tfc:metal/rod/steel",
+    "tfc:metal/rod/gold",
+    "tfc:metal/rod/silver",
+    "tfc:metal/rod/nickel"
+  ]
+}

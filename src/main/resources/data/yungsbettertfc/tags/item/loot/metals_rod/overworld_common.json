@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "tfc:metal/rod/copper",
+    "tfc:metal/rod/bronze",
+    "tfc:metal/rod/bismuth_bronze",
+    "tfc:metal/rod/wrought_iron",
+    "tfc:metal/rod/bismuth",
+    "tfc:metal/rod/tin",
+    "tfc:metal/rod/zinc",
+    "tfc:metal/rod/brass"
+  ]
+}

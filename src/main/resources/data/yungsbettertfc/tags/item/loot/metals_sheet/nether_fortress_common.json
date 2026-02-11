@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "tfc:metal/sheet/wrought_iron",
+    "tfc:metal/sheet/steel",
+    "tfc:metal/sheet/gold",
+    "tfc:metal/sheet/silver",
+    "tfc:metal/sheet/nickel"
+  ]
+}

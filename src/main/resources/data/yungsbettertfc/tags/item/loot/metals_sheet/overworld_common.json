@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "tfc:metal/sheet/copper",
+    "tfc:metal/sheet/bronze",
+    "tfc:metal/sheet/bismuth_bronze",
+    "tfc:metal/sheet/wrought_iron",
+    "tfc:metal/sheet/bismuth",
+    "tfc:metal/sheet/tin",
+    "tfc:metal/sheet/zinc",
+    "tfc:metal/sheet/brass"
+  ]
+}

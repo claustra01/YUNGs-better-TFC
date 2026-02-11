@@ -6,8 +6,21 @@
       "entries": [
         {
           "type": "minecraft:tag",
-          "name": "yungsbettertfc:loot/metals/small_nether",
-          "expand": true
+          "name": "yungsbettertfc:loot/metals_sheet/small_nether",
+          "expand": true,
+          "weight": 1
+        },
+        {
+          "type": "minecraft:tag",
+          "name": "yungsbettertfc:loot/metals_rod/small_nether",
+          "expand": true,
+          "weight": 3
+        },
+        {
+          "type": "minecraft:tag",
+          "name": "yungsbettertfc:loot/metals_ingot/small_nether",
+          "expand": true,
+          "weight": 6
         }
       ]
     }
