@@ -1,9 +1,8 @@
 {
   "replace": false,
   "values": [
-    "tfc:metal/horse_armor/black_steel",
-    "tfc:metal/horse_armor/blue_steel",
-    "tfc:metal/horse_armor/red_steel"
+    "tfc:metal/horse_armor/steel",
+    "tfc:metal/horse_armor/black_steel"
   ]
 }
 
