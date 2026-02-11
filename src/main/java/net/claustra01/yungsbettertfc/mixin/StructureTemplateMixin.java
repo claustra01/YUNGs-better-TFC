@@ -1,6 +1,7 @@
 package net.claustra01.yungsbettertfc.mixin;
 
 import java.util.Set;
+import javax.annotation.Nullable;
 import net.claustra01.yungsbettertfc.access.StructureTemplateIdAccess;
 import net.claustra01.yungsbettertfc.world.processor.TfcBlockReplacementProcessor;
 import net.minecraft.core.BlockPos;
@@ -26,9 +27,10 @@ public abstract class StructureTemplateMixin implements StructureTemplateIdAcces
                     "betterfortresses",
                     "beneath");
 
-    @Unique private ResourceLocation yungsbettertfc$templateId;
+    @Unique @Nullable private ResourceLocation yungsbettertfc$templateId;
 
     @Override
+    @Nullable
     public ResourceLocation yungsbettertfc$getTemplateId() {
         return yungsbettertfc$templateId;
     }

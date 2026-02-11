@@ -16,7 +16,7 @@ public final class ModStructureProcessors {
     public static final DeferredHolder<StructureProcessorType<?>, StructureProcessorType<TfcBlockReplacementProcessor>>
             TFC_BLOCK_REPLACEMENT = STRUCTURE_PROCESSORS.register(
                     "tfc_block_replacement",
-                    () -> (StructureProcessorType<TfcBlockReplacementProcessor>) () -> TfcBlockReplacementProcessor.CODEC);
+                    () -> () -> TfcBlockReplacementProcessor.CODEC);
 
     public static void register(IEventBus modEventBus) {
         STRUCTURE_PROCESSORS.register(modEventBus);
