@@ -132,6 +132,8 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             path = path.substring("infested_".length());
         }
 
+        CompoundTag outNbt = replaceVanillaOreInStructureNbt(processedBlockInfo.nbt());
+
         // Tall seagrass is a double-block plant. Replacing it with a single-block aquatic plant works best if the upper
         // half becomes water (otherwise the "upper" plant block tends to pop off).
         if ("tall_seagrass".equals(path)
@@ -195,6 +197,9 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         @Nullable ResourceLocation outId =
                 mapVanillaToTfc(path, rock, soil, woodHint, infested, scope, beneathNether);
         if (outId == null) {
+            if (outNbt != processedBlockInfo.nbt()) {
+                return new StructureTemplate.StructureBlockInfo(processedBlockInfo.pos(), in, outNbt);
+            }
             return processedBlockInfo;
         }
 
@@ -220,7 +225,6 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
                     woodHint);
         }
 
-        CompoundTag outNbt = processedBlockInfo.nbt();
         if (TFC_FIREPIT.equals(outId)) {
             out = applyFirepitAxisFromFacing(in, out);
             // Furnace/campfire block entity tags don't make sense on a firepit and can cause odd behavior.
@@ -339,6 +343,12 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
         @Nullable ResourceLocation firepit = mapFirepit(vanillaPath);
         if (firepit != null) {
             return firepit;
+        }
+
+        // Replace vanilla ore blocks with TFC ores when available.
+        @Nullable ResourceLocation ore = mapOre(vanillaPath);
+        if (ore != null) {
+            return ore;
         }
 
         if (scope == ReplacementScope.UTILITY_ONLY) {
@@ -482,6 +492,23 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
             default:
                 return null;
         }
+    }
+
+    private static @Nullable ResourceLocation mapOre(String vanillaPath) {
+        return switch (vanillaPath) {
+            case "coal_ore", "deepslate_coal_ore" -> firstExistingTfcBlock("ore/normal_lignite", "ore/normal_bituminous_coal");
+            case "iron_ore", "deepslate_iron_ore" ->
+                    firstExistingTfcBlock("ore/normal_hematite", "ore/normal_magnetite", "ore/normal_limonite");
+            case "copper_ore", "deepslate_copper_ore" -> firstExistingTfcBlock("ore/normal_native_copper");
+            case "gold_ore", "deepslate_gold_ore" -> firstExistingTfcBlock("ore/normal_native_gold");
+            case "nether_gold_ore" -> firstExistingTfcBlock("ore/normal_nether_gold", "ore/normal_native_gold");
+            case "lapis_ore", "deepslate_lapis_ore" -> firstExistingTfcBlock("ore/normal_lapis_lazuli");
+            case "diamond_ore", "deepslate_diamond_ore" -> firstExistingTfcBlock("ore/normal_diamond");
+            case "emerald_ore", "deepslate_emerald_ore" -> firstExistingTfcBlock("ore/normal_emerald");
+            case "redstone_ore", "deepslate_redstone_ore" -> firstExistingTfcBlock("ore/normal_cinnabar");
+            case "nether_quartz_ore" -> firstExistingTfcBlock("ore/normal_quartz");
+            default -> null;
+        };
     }
 
     private static @Nullable ResourceLocation mapStone(String vanillaPath, String rock, boolean infested) {
@@ -860,6 +887,50 @@ public final class TfcBlockReplacementProcessor extends StructureProcessor {
     private static @Nullable ResourceLocation beneath(String path) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NS_BENEATH, path);
         return BuiltInRegistries.BLOCK.containsKey(id) ? id : null;
+    }
+
+    private static @Nullable ResourceLocation firstExistingTfcBlock(String... candidatePaths) {
+        for (String candidatePath : candidatePaths) {
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NS_TFC, candidatePath);
+            if (BuiltInRegistries.BLOCK.containsKey(id)) {
+                return id;
+            }
+        }
+        return null;
+    }
+
+    private static @Nullable CompoundTag replaceVanillaOreInStructureNbt(@Nullable CompoundTag nbt) {
+        if (nbt == null || !nbt.contains("final_state", Tag.TAG_STRING)) {
+            return nbt;
+        }
+
+        String finalState = nbt.getString("final_state");
+        String trimmed = finalState.trim();
+        if (trimmed.isEmpty() || !trimmed.contains("ore")) {
+            return nbt;
+        }
+
+        int separator = trimmed.length();
+        int bracket = trimmed.indexOf('[');
+        if (bracket >= 0) separator = Math.min(separator, bracket);
+        int brace = trimmed.indexOf('{');
+        if (brace >= 0) separator = Math.min(separator, brace);
+
+        String blockIdPart = trimmed.substring(0, separator).trim();
+        ResourceLocation blockId = ResourceLocation.tryParse(blockIdPart);
+        if (blockId == null || !NS_MINECRAFT.equals(blockId.getNamespace())) {
+            return nbt;
+        }
+
+        @Nullable ResourceLocation replacement = mapOre(blockId.getPath());
+        if (replacement == null) {
+            return nbt;
+        }
+
+        String replacedState = replacement + trimmed.substring(separator);
+        CompoundTag out = nbt.copy();
+        out.putString("final_state", replacedState);
+        return out;
     }
 
     private static boolean replaceItemStackInTag(CompoundTag entityNbt, String key, String metal) {
